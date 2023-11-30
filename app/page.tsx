@@ -1,95 +1,90 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client";
+import { useState, useEffect } from "react";
+import Cell from "./components/cell";
+import Score from "./components/score";
 
 export default function Home() {
+  const winingGeame = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+  const [cells, setCell] = useState(["", "", "", "", "", "", "", "", ""]);
+  const [go, setGo] = useState("circle");
+  const [messageWin, setmessageWin] = useState("");
+  const [scoreCross,setscoreCross] = useState<number>(0)
+  const [scoreCircle,setscoreCircle] = useState<number>(0)
+
+
+  useEffect(() => {
+    winingGeame.forEach((comp) => {
+      const circleWine = comp.every((ever) => cells[ever] === "circle");
+      const crossWine = comp.every((ever) => cells[ever] === "cross");
+      if (circleWine) {
+        setmessageWin("circle is Wining");
+        setscoreCircle(scoreCircle +1)
+        
+      } else if (crossWine) {
+        setmessageWin("cross is Wining");
+        setscoreCross(scoreCross +1)
+      }
+    }
+    
+    );
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cells, messageWin]);
+
+
+  useEffect(()=>{
+    if(cells.every((ever) => ever !== "") && !messageWin){
+      setmessageWin('the geame is drow')
+    }
+  },[cells, messageWin]);
+
+
+
+  const setgame=()=> {
+    setmessageWin("")
+    setCell(["", "", "", "", "", "", "", "", ""]);
+    
+  }
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
+    <main className="container">
+      {/* <Score scoreCross={scoreCross} scoreCircle={scoreCircle} /> */}
+      <div className="scoreContainer">
+        <span className="scorex">{`Score X    ${scoreCross}`}</span>
+        <span className="scoreo">{`Score O    ${scoreCircle}`}</span>
+    </div>
+      <div className="gamebord">
+        {cells.map((cel, index) => (
+          <Cell
+            messageWin={messageWin}
+            cel={cel}
+            setCell={setCell}
+            cells={cells}
+            id={index}
+            go={go}
+            setGo={setGo}
+            key={index}
+          />
+        ))}
       </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
+      <div className="message">
+        <p>{messageWin && <button className="refrish" onClick={setgame}>sfchwe</button>}</p>
+        {!messageWin && (
           <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
+            the Geame is
+            <span className={go === "circle" ? "blue" : "red"}>{go}</span>
           </p>
-        </a>
+        )}
       </div>
+      
     </main>
-  )
+  );
 }
